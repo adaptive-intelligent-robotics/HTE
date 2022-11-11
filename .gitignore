@@ -1,0 +1,7 @@
+*~
+*.simg
+*.sif
+singularity/results/*
+*.pyc
+*.nfs*
+*gen_l*

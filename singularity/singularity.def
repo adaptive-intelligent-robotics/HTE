@@ -1,0 +1,266 @@
+Bootstrap: library
+From: airl_lab/default/airl_env:base_2.0
+
+
+%labels
+    Author maxime.allard@imperial.ac.uk
+    Version v0.1
+
+%files
+    ./resources/setup.sh /git/sferes2		
+%post
+   export LD_LIBRARY_PATH="/workspace/lib:$LD_LIBRARY_PATH"
+
+   ##INSTALLING PYTHON 
+   apt-get update
+   ##apt-get upgrade
+   DEBIAN_FRONTEND=noninteractive apt-get install -y python3-matplotlib python3-numpy python3-tk python3-dev python3-pip gdb -qq
+   DEBIAN_FRONTEND=noninteractive apt-get install -y  python-numpy python2.7-dev
+   apt-get install -y ffmpeg  # For saving videos with robot_dart
+   apt-get install -y valgrind kcachegrind unzip
+
+   pip3 install seaborn pandas python-gitlab plotly -q
+
+   ## INSTALLING LIMBO
+   cd /git
+   git clone https://github.com/resibots/limbo.git
+   cd limbo
+   ./waf configure --prefix /workspace # general and initial configuration 
+   ./waf build
+   
+   export GIT_SSL_NO_VERIFY=1
+
+   ## INSTALLING MCTS LIBRARY
+   cd /git
+   git clone https://github.com/resibots/chatzilygeroudis_2018_rte.git
+   cd chatzilygeroudis_2018_rte/mcts
+   
+   # add lines to the include files in order to prevent compilation error from missing libraries 
+   sed -i "/mcts\/uct.hpp/a #include <random>" src/toy_sim.cpp
+   sed -i "/define MCTS_DEFAULTS_HPP/a #include <cmath>" include/mcts/defaults.hpp
+   python2 ./waf configure --prefix /workspace
+   python2 ./waf
+   python2 ./waf install
+
+   cd /git/sferes2/exp
+   mkdir hte
+
+   cd ./hte/resources/hbr_repertoires
+   unzip -o hbr_gp_repertoire.zip 
+   cd ../flat_repertoires
+   unzip -o flat_8D_repertoire.zip
+   unzip -o flat_2D_repertoire.zip
+   cd ../aprol_repertoires
+   unzip -o aprol_repertoire.zip
+   
+   #====================================================================================================
+   exit 0 #NOTFORFINAL - the lines below this "exit" will be executed only when building the final image
+   #====================================================================================================
+
+   git clone  --recurse-submodules  https://github.com/adaptive-intelligent-robotics/HTE.git ./hte
+
+   cd /git/sferes2/
+   ./setup.sh
+   
+%runscript
+
+    if [ $# -gt 1 ]; then
+        echo "Invalid command. Please run 'singularity help <container name>' for help."
+	exit
+    fi
+
+    CURPATH=$(pwd)
+    if [ ! -d ./results ]; then
+        mkdir results
+    fi
+    
+    cd /git/limbo/
+
+
+    if [ $# -eq 0 ]; then
+        ./build/exp/hte/hte_graphic
+   	exit
+    fi
+    
+    # running the experiment (the -d option allows to define the directory where the results should be stored
+    PATHNAME=$(date +%Y-%m-%d_%H_%M_%S)_$$
+    mkdir $CURPATH/results/$PATHNAME
+
+%apprun low_dim
+
+    export HOME=/tmp/home
+    mkdir $HOME
+    D=$(/opt/TurboVNC/bin/vncserver 2>&1 | grep "Desktop" | awk '{print $3}' | sed 's/.*://g')
+    export DISPLAY=':'$D
+    
+    CURPATH=$(pwd)
+    cd /git/sferes2/exp/hte/
+    git log --decorate --oneline --graph master -n 30 > $CURPATH/git_log.txt
+    cd $CURPATH
+    if [ ! -d ./results ]; then
+        mkdir results
+    fi
+    cd /git/sferes2/
+    # running the experiment (the -d option allows to define the directory where the results should be stored
+    PATHNAME=$(date +%Y-%m-%d_%H_%M_%S)_$$_$1
+
+    ARCHIVE_NR=$1
+
+    mkdir $CURPATH/results/$PATHNAME
+    #cp exp/hte/python/analysis_hexa_omni.py $CURPATH/results/$PATHNAME
+    #build/exp/hte/low_dim_graphic -d $CURPATH/results/$PATHNAME 
+    
+    for i in 0 1 2 3 4 5 6
+    do
+        echo $i
+        mkdir $CURPATH/results/$PATHNAME/$i
+        build/exp/hte/low_dim_graphic -d $CURPATH/results/$PATHNAME/$i -l $i -r $ARCHIVE_NR 2>/dev/null
+    done
+
+%apprun high_dim
+
+    export HOME=/tmp/home
+    mkdir $HOME
+    D=$(/opt/TurboVNC/bin/vncserver 2>&1 | grep "Desktop" | awk '{print $3}' | sed 's/.*://g')
+    export DISPLAY=':'$D
+    
+    CURPATH=$(pwd)
+    cd /git/sferes2/exp/hte/
+    git log --decorate --oneline --graph master -n 30 > $CURPATH/git_log.txt
+    cd $CURPATH
+    if [ ! -d ./results ]; then
+        mkdir results
+    fi
+    cd /git/sferes2/
+    # running the experiment (the -d option allows to define the directory where the results should be stored
+    PATHNAME=$(date +%Y-%m-%d_%H_%M_%S)_$$_$1
+
+    ARCHIVE_NR=$1
+
+    mkdir $CURPATH/results/$PATHNAME
+    #cp exp/hte/python/analysis_hexa_omni.py $CURPATH/results/$PATHNAME
+    #build/exp/hte/high_dim_graphic -d $CURPATH/results/$PATHNAME
+
+    for i in 0 1 2 3 4 5 6
+    do
+        echo $i
+        mkdir $CURPATH/results/$PATHNAME/$i
+        build/exp/hte/high_dim_graphic -d $CURPATH/results/$PATHNAME/$i -r $ARCHIVE_NR -l $i 2>/dev/null
+    done
+
+%apprun hbr_simu
+
+    export HOME=/tmp/home
+    mkdir $HOME
+    D=$(/opt/TurboVNC/bin/vncserver 2>&1 | grep "Desktop" | awk '{print $3}' | sed 's/.*://g')
+    export DISPLAY=':'$D
+    
+    CURPATH=$(pwd)
+    cd /git/sferes2/exp/hte/
+    git log --decorate --oneline --graph master -n 30 > $CURPATH/git_log.txt
+    cd $CURPATH
+    if [ ! -d ./results ]; then
+        mkdir results
+    fi
+    cd /git/sferes2/
+    # running the experiment (the -d option allows to define the directory where the results should be stored
+    PATHNAME=$(date +%Y-%m-%d_%H_%M_%S)_$$_$1
+
+    ARCHIVE_NR=$1
+
+    mkdir $CURPATH/results/$PATHNAME
+    #cp exp/hte/python/analysis_hexa_omni.py $CURPATH/results/$PATHNAME
+    #build/exp/hte/hte -d $CURPATH/results/$PATHNAME "$@"
+
+    for i in 0 1 2 3 4 5 6
+    do
+        echo $i
+        mkdir $CURPATH/results/$PATHNAME/$i
+        build/exp/hte/hte -d $CURPATH/results/$PATHNAME/$i -l $i -r $ARCHIVE_NR 2>/dev/null
+    done
+
+
+%apprun aprol
+
+    export HOME=/tmp/home
+    mkdir $HOME
+    D=$(/opt/TurboVNC/bin/vncserver 2>&1 | grep "Desktop" | awk '{print $3}' | sed 's/.*://g')
+    export DISPLAY=':'$D
+    
+    CURPATH=$(pwd)
+    cd /git/sferes2/exp/hte/
+    git log --decorate --oneline --graph master -n 30 > $CURPATH/git_log.txt
+    cd $CURPATH
+    if [ ! -d ./results ]; then
+        mkdir results
+    fi
+    cd /git/sferes2/
+    # running the experiment (the -d option allows to define the directory where the results should be stored
+    PATHNAME=$(date +%Y-%m-%d_%H_%M_%S)_$$_$1
+    
+    ARCHIVE_NR=$1
+    mkdir $CURPATH/results/$PATHNAME
+    #cp exp/hte/python/analysis_hexa_omni.py $CURPATH/results/$PATHNAME
+    #build/exp/hte/aprol_graphic -d $CURPATH/results/$PATHNAME
+
+    for i in 0 1 2 3 4 5 6
+    do
+        echo $i
+        mkdir $CURPATH/results/$PATHNAME/$i
+        build/exp/hte/aprol_graphic -d $CURPATH/results/$PATHNAME/$i -r $ARCHIVE_NR -l $i 2>/dev/null
+    done
+    
+%apprun acceleration_gp_legs
+
+    export HOME=/tmp/home
+    mkdir $HOME
+    D=$(/opt/TurboVNC/bin/vncserver 2>&1 | grep "Desktop" | awk '{print $3}' | sed 's/.*://g')
+    export DISPLAY=':'$D
+    
+    CURPATH=$(pwd)
+    cd /git/sferes2/exp/hte/
+    git log --decorate --oneline --graph master -n 30 > $CURPATH/git_log.txt
+    cd $CURPATH
+    if [ ! -d ./results ]; then
+        mkdir results
+    fi
+    cd /git/sferes2/
+    # running the experiment (the -d option allows to define the directory where the results should be stored
+    PATHNAME=$(date +%Y-%m-%d_%H_%M_%S)_$$
+    mkdir $CURPATH/results/$PATHNAME
+    #cp exp/hte/python/analysis_hexa_omni.py $CURPATH/results/$PATHNAME
+    build/exp/hte/acceleration_gp_legs -d $CURPATH/results/$PATHNAME
+
+    module load anaconda3/personal
+    cd $CURPATH/results/$PATHNAME
+    #python analysis_hexa_omni.py
+    
+%apprun gen_job_scripts
+    echo "Generating job scripts"
+    python3 /git/sferes2/exp/hte/submodules/gitlab_notebook/gen_job_script.py "$@"
+
+
+%apprun analysis
+    python3 /git/sferes2/exp/hte/python/analysis.py "$@"
+    CURPATH=$(pwd)
+    cd /git/sferes2/exp/hte/
+    git log --decorate --oneline --graph master -n 30 > $CURPATH/git_log.txt
+
+    python3  ./submodules/gitlab_notebook/gen_report.py $CURPATH
+
+%apprun analysis_damage
+    python3 /git/sferes2/exp/hte/python/analysis_damage.py "$@"
+    CURPATH=$(pwd)
+    cd /git/sferes2/exp/hte/
+    git log --decorate --oneline --graph master -n 30 > $CURPATH/git_log.txt
+
+    python3  ./submodules/gitlab_notebook/gen_report.py $CURPATH
+
+%help
+    This is the development and running environment of the RTE_hexapod.
+
+    Run executable image with no arugument and turn on a visualisation server window to see the hexapod in simulation navigating map_2.txt.
+    
+    The hexapod uses an behavioural repertoire (archive) generated through the MAP-Elites algorithm to obtain behaviorus to move in all directions.
+    The second part of this algorihtm is when the robot using its learnt behaviours from the repertoire to autonmously navigate the map/environment.
+    The second part of this algorihtm makes use of the A* path plannign algorithm which guides a Monte Carlo Tree Search (MCTS) to navigate to desired end position.  
