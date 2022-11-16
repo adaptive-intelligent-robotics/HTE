@@ -911,7 +911,7 @@ void execute(const Eigen::VectorXd& desc, double t, bool stat = true)
     Eigen::VectorXd::Map(d.data(), d.size()) = desc;
 
     std::ofstream ofs;
-    ofs.open("exp/hte/visualise_MCTS/execute.dat", std::ios_base::app);
+    ofs.open("exp/HTE/visualise_MCTS/execute.dat", std::ios_base::app);
     ofs << desc.transpose() << " " << std::endl;
     ofs.close();
     
@@ -1029,7 +1029,7 @@ void hbr_execute(const Eigen::VectorXd& desc, double t, int tot_step = 0, bool s
     Eigen::VectorXd::Map(d.data(), d.size()) = desc;
 
     std::ofstream ofs;
-    ofs.open("exp/hte/visualise_MCTS/execute.dat", std::ios_base::app);
+    ofs.open("exp/HTE/visualise_MCTS/execute.dat", std::ios_base::app);
     ofs << desc.transpose() << " " << std::endl;
     ofs.close();
     
@@ -1537,7 +1537,7 @@ std::tuple<double, double, double> get_x_y_theta(const Eigen::Vector3d& prev_pos
     tr_pos << 0.0, 0.0, 1.0;
     tr_pos = tr * tr2 * tr_pos;
     std::ofstream ofs;
-    ofs.open("exp/hte/visualise_MCTS/get_x_y.dat", std::ios_base::app);
+    ofs.open("exp/HTE/visualise_MCTS/get_x_y.dat", std::ios_base::app);
     ofs << tr_pos(0) << " "
 	<< tr_pos(1) << " "
 	<< angle_dist(prev_pose(2), curr_pose(2)) << std::endl;
@@ -1806,7 +1806,7 @@ void init_simu()
 
   //-----------------------------init_simu-------------------------------------------------
     std::cout<<"INIT Robot"<<std::endl;
-    global::global_robot = std::make_shared<robot_dart::Robot>("exp/hte/resources/hexapod_v2.urdf");
+    global::global_robot = std::make_shared<robot_dart::Robot>("exp/HTE/resources/hexapod_v2.urdf");
 
     global::global_robot->set_position_enforced(true);
 
@@ -2000,12 +2000,12 @@ int main(int argc, char **argv)
         std::string path = "";
         if(archive_nr.empty())
         {
-            path = "exp/hte/resources/hbr_repertoires/hbr_gp_repertoire/Archive1";
+            path = "exp/resources/hbr_repertoires/hbr_gp_repertoire/Archive1";
             archive_file = path+"/archive_20000_hbr.dat";
             }
         else
         {
-            path = "exp/hte/resources/hbr_repertoires/hbr_gp_repertoire/Archive" + archive_nr;
+            path = "exp/resources/hbr_repertoires/hbr_gp_repertoire/Archive" + archive_nr;
             archive_file = path+"/archive_20000_hbr.dat";
         }
 
@@ -2051,22 +2051,22 @@ int main(int argc, char **argv)
     if(ARCHIVE_SIZE==2){
         if(archive_nr.empty())
         {
-             archive_file = "exp/hte/resources/flat_repertoires/flat_2D_repertoire/Archive1/archive_2400_2d.dat";
+             archive_file = "exp/resources/flat_repertoires/flat_2D_repertoire/Archive1/archive_2400_2d.dat";
             }
         else
         {
-            archive_file = "exp/hte/resources/flat_repertoires/flat_2D_repertoire/Archive"+ archive_nr+"/archive_2400_2d.dat";
+            archive_file = "exp/resources/flat_repertoires/flat_2D_repertoire/Archive"+ archive_nr+"/archive_2400_2d.dat";
         }
         
     }
     else{
         if(archive_nr.empty())
         {
-            archive_file = "exp/hte/resources/flat_repertoires/flat_8D_repertoire/Archive1/archive_2400_8d.dat";
+            archive_file = "exp/resources/flat_repertoires/flat_8D_repertoire/Archive1/archive_2400_8d.dat";
             }
         else
         {
-            archive_file = "exp/hte/resources/flat_repertoires/flat_8D_repertoire/Archive"+ archive_nr+"/archive_2400_8d.dat";
+            archive_file = "exp/resources/flat_repertoires/flat_8D_repertoire/Archive"+ archive_nr+"/archive_2400_8d.dat";
         }
         
     }

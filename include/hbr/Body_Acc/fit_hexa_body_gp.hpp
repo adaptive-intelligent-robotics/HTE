@@ -67,7 +67,7 @@ namespace layer1 {
 namespace pool {
    std::shared_ptr<robot_dart::Robot> robot_creator()
    {
-     auto robot = std::make_shared<robot_dart::Robot>("exp/hte/resources/hexapod_v2.urdf");
+     auto robot = std::make_shared<robot_dart::Robot>("exp/HTE/resources/hexapod_v2.urdf");
      robot->set_position_enforced(true);
      robot->set_actuator_types("servo");
      return robot;     

@@ -68,7 +68,7 @@ cd /git/sferes2
 6. The command above should compile the code that is defined in the wscript that is contained within your folder (which is bound to the singularity container).
 
 ```
-/git/sferes2/exp/hte/wscript
+/git/sferes2/exp/HTE/wscript
 ```
 
 Every file that is changed locally, will directly changed within the container now. This makes it easier to develop code. Compiling all the programs can take some time so feel free to comment out the blocks of code that you don't need within the [wscript](wscript).
@@ -76,18 +76,18 @@ If you would like to run the code without visuals , please remove the keyword `G
 
 7. Among the compiled programs, we have :
     - `hbr_training`: This trains and saves Hierarchical Behavioural Repertoires on the Hexapod Omnidirectional Task as noted in the paper. To define the target folder for the results, define the argument `-d` with the path.
-    - `hte` : This runs the HTE version. The archives (called `gen` files) that will be created bys the `hbr_training` should be put into the directory `hte/resources/hbr_repertoires/hbr_repertoire`. This includes the binary files of each layer (`gen` file) as well as the repertoire content `archive_x.dat` of the **last** layer where `x` is the number of iterations you have used. **NOTE** Rename the binary files of each layer by appending the suffix of the layer : `gen_l1`,`gen_l2` and `gen_l3` . We have included the original trained repertoires as `.zip` files which have been used in the paper and put them into the [resources folder](resources/):
+    - `hte` : This runs the HTE version. The archives (called `gen` files) that will be created bys the `hbr_training` should be put into the directory `exp/resources/hbr_repertoires/hbr_repertoire`. This includes the binary files of each layer (`gen` file) as well as the repertoire content `archive_x.dat` of the **last** layer where `x` is the number of iterations you have used. **NOTE** Rename the binary files of each layer by appending the suffix of the layer : `gen_l1`,`gen_l2` and `gen_l3` . We have included the original trained repertoires as `.zip` files which have been used in the paper and put them into the [resources folder](resources/):
         - [aprol_repertoires](resources/aprol_repertoires/)
         - [flat_repertoires](resources/flat_repertoires/) (both 2D and 8D)
         - [hbr_repertoires ](resources/hbr_repertoires)
-    In the [singularity definition](singularity/singularity.def) we unzip the files and put it into the right folders. You don't have to do anything if you have already started the container as noted in step 3.
+    In the [singularity definition](singularity/singularity.def) we unzip the files and put it into the correct folders. You don't have to do anything if you have already started the container as noted in step 3.
     - `hte_graphic` : Same as the previous algorithm but with a graphical interface. However you will have to export a DISPLAY variable to match the visual server you have on your machine.
     - `low_dim_graphic` : This runs the classical RTE version with a 2D archive. The archives for this version are located in [flat_2D_repertoires](resources/flat_repertoires/flat_2D_repertoire.zip).
     - `high_dim_graphic` : This runs the classical RTE version with a 8D archive. The archives for this version are located in [flat_8D_repertoires](resources/flat_repertoires/flat_8D_repertoire.zip).
 
     They can then be executed by running the command (for example): 
     ```
-    build/exp/hte/hte
+    build/exp/HTE/hte -r 1 -l 0 2>/dev/null
     ```
 
     **NOTE**
@@ -99,7 +99,7 @@ If you would like to run the code without visuals , please remove the keyword `G
     ```
     where the Display number is your display
 
-8. The compiled codes for the HTE (`build/exp/hte/hte`) take the following arguments:
+8. The compiled codes for the HTE (`build/exp/HTE/hte`) take the following arguments:
     - `-r` : repertoire number x that should be used (1 to 5)
     - `-l` : leg that should be damaged (0 to 5) and double damage (both central legs) is 6
 
@@ -109,9 +109,9 @@ If you would like to run the code without visuals , please remove the keyword `G
 
     For Example:
     ```
-     build/exp/hte/hte -r 1 -l 0 2>/dev/null
+     build/exp/HTE/hte -r 1 -l 0 2>/dev/null
     ```
-    If you run the example in the singularity container, the results can be found in the singularity file under `/hte.sif/git/sferes2/build/exp/hte` if you do not specify any results directory.
+    If you run the example in the singularity container, the results can be found in the singularity file under `/HTE.sif/git/sferes2/build/exp/HTE` if you do not specify any results directory.
     
 
 ## Where to find stuff?

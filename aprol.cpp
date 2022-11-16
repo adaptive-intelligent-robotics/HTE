@@ -1074,7 +1074,7 @@ void execute(const Eigen::VectorXd& desc, double t, bool stat = true)
     std::cout<< "Beginning execute function" << std::endl ;
 
     std::ofstream ofs;
-    ofs.open("exp/rte_v2_adapt/visualise_MCTS/execute.dat", std::ios_base::app);
+    ofs.open("exp/HTE/visualise_MCTS/execute.dat", std::ios_base::app);
     ofs << desc.transpose() << " " << std::endl;
     ofs.close();
 
@@ -1242,7 +1242,7 @@ void hbr_execute(const Eigen::VectorXd& desc, double t, bool stat = true)
     Eigen::VectorXd::Map(d.data(), d.size()) = desc;
 
     std::ofstream ofs;
-    ofs.open("exp/rte_v2_adapt/visualise_MCTS/execute.dat", std::ios_base::app);
+    ofs.open("exp/HTE/visualise_MCTS/execute.dat", std::ios_base::app);
     ofs << desc.transpose() << " " << std::endl;
     ofs.close();
     
@@ -1526,7 +1526,7 @@ std::tuple<double, double, double> get_x_y_theta(const Eigen::Vector3d& prev_pos
     // // It's the same!
     // std::cout << th << " vs " << angle_dist(prev_pose(2), curr_pose(2)) << std::endl;
     std::ofstream ofs;
-    ofs.open("exp/rte_v2_adapt/visualise_MCTS/get_x_y.dat", std::ios_base::app);
+    ofs.open("exp/HTE/visualise_MCTS/get_x_y.dat", std::ios_base::app);
     ofs << tr_pos(0) << " "
 	<< tr_pos(1) << " "
 	<< angle_dist(prev_pose(2), curr_pose(2)) << std::endl;
@@ -1984,7 +1984,7 @@ void init_simu()
 
   //-----------------------------init_simu-------------------------------------------------
     std::cout<<"INIT Robot"<<std::endl;
-    global::global_robot = std::make_shared<robot_dart::Robot>("exp/rte_v2_adapt/resources/hexapod_v2.urdf");
+    global::global_robot = std::make_shared<robot_dart::Robot>("exp/HTE/resources/hexapod_v2.urdf");
 
     global::global_robot->set_position_enforced(true);
 
@@ -2263,7 +2263,7 @@ int main(int argc, char **argv)
     std::string map_string = ""; //map_string used as input to the function init_map - u
     std::string map_file = "";
 
-    map_file = "exp/rte_v2_adapt/test_maps/map_hard.txt" ;
+    map_file = "exp/HTE/test_maps/map_hard.txt" ;
     std::ifstream t(map_file); // t is now the object that containes the map_file - must #include <fstream> to use this
     if (!t.is_open() || !t.good()) { //is_open function used to check if a file is open. good: check whether state of stream is good. Therefore, if NOT (logical oprator for not is !) open or NOT good, return/print error
       std::cerr << "Exception while reading the map file: " << map_file << std::endl;
@@ -2281,10 +2281,10 @@ int main(int argc, char **argv)
     std::string path;
     if(archive_nr.empty())
         {
-            path = "exp/rte_v2_adapt/resources/aprol_repertoires/aprol_repertoire/aprol_repertoire_1";
+            path = "exp/resources/aprol_repertoires/aprol_repertoire/aprol_repertoire_1";
         }
     else{
-            path = "exp/rte_v2_adapt/resources/aprol_repertoires/aprol_repertoire/aprol_repertoire_" + archive_nr;
+            path = "exp/resources/aprol_repertoires/aprol_repertoire/aprol_repertoire_" + archive_nr;
     }
     std::cout<<"Files: "<<std::endl;
     for (const auto & entry : fs::directory_iterator(path)){

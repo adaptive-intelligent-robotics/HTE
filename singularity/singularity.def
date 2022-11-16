@@ -7,7 +7,11 @@ From: airl_lab/default/airl_env:base_2.0
     Version v0.1
 
 %files
-    ./resources/setup.sh /git/sferes2		
+    ./resources/setup.sh /git/sferes2	
+    ../resources/hbr_repertoires/hbr_gp_repertoire.zip /git/sferes2
+    ../resources/flat_repertoires/flat_8D_repertoire.zip /git/sferes2
+    ../resources/flat_repertoires/flat_2D_repertoire.zip /git/sferes2
+    ../resources/aprol_repertoires/aprol_repertoire.zip /git/sferes2
 %post
    export LD_LIBRARY_PATH="/workspace/lib:$LD_LIBRARY_PATH"
 
@@ -43,21 +47,29 @@ From: airl_lab/default/airl_env:base_2.0
    python2 ./waf install
 
    cd /git/sferes2/exp
-   mkdir hte
+   #mkdir -p ./hte/resources/
+   mkdir -p ./HTE
 
-   cd ./hte/resources/hbr_repertoires
-   unzip -o hbr_gp_repertoire.zip 
-   cd ../flat_repertoires
-   unzip -o flat_8D_repertoire.zip
-   unzip -o flat_2D_repertoire.zip
-   cd ../aprol_repertoires
-   unzip -o aprol_repertoire.zip
+   cd /git/sferes2/
+   mkdir -p ./exp/resources/
+   unzip -o hbr_gp_repertoire.zip -d ./exp/resources/hbr_repertoires
+   unzip -o flat_8D_repertoire.zip -d ./exp/resources/flat_repertoires
+   unzip -o flat_2D_repertoire.zip -d ./exp/resources/flat_repertoires
+   unzip -o aprol_repertoire.zip -d ./exp/resources/aprol_repertoires
+
+   #cd ./hte/resources/hbr_repertoires
+   #unzip -o hbr_gp_repertoire.zip 
+   #cd ../flat_repertoires
+   #unzip -o flat_8D_repertoire.zip
+   #unzip -o flat_2D_repertoire.zip
+   #cd ../aprol_repertoires
+   #unzip -o aprol_repertoire.zip
    
    #====================================================================================================
    exit 0 #NOTFORFINAL - the lines below this "exit" will be executed only when building the final image
    #====================================================================================================
 
-   git clone  --recurse-submodules  https://github.com/adaptive-intelligent-robotics/HTE.git ./hte
+   git clone  --recurse-submodules  https://github.com/adaptive-intelligent-robotics/HTE.git ./HTE
 
    cd /git/sferes2/
    ./setup.sh
@@ -78,7 +90,7 @@ From: airl_lab/default/airl_env:base_2.0
 
 
     if [ $# -eq 0 ]; then
-        ./build/exp/hte/hte_graphic
+        ./build/exp/HTE/hte_graphic
    	exit
     fi
     
@@ -94,7 +106,7 @@ From: airl_lab/default/airl_env:base_2.0
     export DISPLAY=':'$D
     
     CURPATH=$(pwd)
-    cd /git/sferes2/exp/hte/
+    cd /git/sferes2/exp/HTE/
     git log --decorate --oneline --graph master -n 30 > $CURPATH/git_log.txt
     cd $CURPATH
     if [ ! -d ./results ]; then
@@ -107,14 +119,14 @@ From: airl_lab/default/airl_env:base_2.0
     ARCHIVE_NR=$1
 
     mkdir $CURPATH/results/$PATHNAME
-    #cp exp/hte/python/analysis_hexa_omni.py $CURPATH/results/$PATHNAME
-    #build/exp/hte/low_dim_graphic -d $CURPATH/results/$PATHNAME 
+    #cp exp/HTE/python/analysis_hexa_omni.py $CURPATH/results/$PATHNAME
+    #build/exp/HTE/low_dim_graphic -d $CURPATH/results/$PATHNAME 
     
     for i in 0 1 2 3 4 5 6
     do
         echo $i
         mkdir $CURPATH/results/$PATHNAME/$i
-        build/exp/hte/low_dim_graphic -d $CURPATH/results/$PATHNAME/$i -l $i -r $ARCHIVE_NR 2>/dev/null
+        build/exp/HTE/low_dim_graphic -d $CURPATH/results/$PATHNAME/$i -l $i -r $ARCHIVE_NR 2>/dev/null
     done
 
 %apprun high_dim
@@ -125,7 +137,7 @@ From: airl_lab/default/airl_env:base_2.0
     export DISPLAY=':'$D
     
     CURPATH=$(pwd)
-    cd /git/sferes2/exp/hte/
+    cd /git/sferes2/exp/HTE/
     git log --decorate --oneline --graph master -n 30 > $CURPATH/git_log.txt
     cd $CURPATH
     if [ ! -d ./results ]; then
@@ -138,14 +150,14 @@ From: airl_lab/default/airl_env:base_2.0
     ARCHIVE_NR=$1
 
     mkdir $CURPATH/results/$PATHNAME
-    #cp exp/hte/python/analysis_hexa_omni.py $CURPATH/results/$PATHNAME
-    #build/exp/hte/high_dim_graphic -d $CURPATH/results/$PATHNAME
+    #cp exp/HTE/python/analysis_hexa_omni.py $CURPATH/results/$PATHNAME
+    #build/exp/HTE/high_dim_graphic -d $CURPATH/results/$PATHNAME
 
     for i in 0 1 2 3 4 5 6
     do
         echo $i
         mkdir $CURPATH/results/$PATHNAME/$i
-        build/exp/hte/high_dim_graphic -d $CURPATH/results/$PATHNAME/$i -r $ARCHIVE_NR -l $i 2>/dev/null
+        build/exp/HTE/high_dim_graphic -d $CURPATH/results/$PATHNAME/$i -r $ARCHIVE_NR -l $i 2>/dev/null
     done
 
 %apprun hbr_simu
@@ -156,7 +168,7 @@ From: airl_lab/default/airl_env:base_2.0
     export DISPLAY=':'$D
     
     CURPATH=$(pwd)
-    cd /git/sferes2/exp/hte/
+    cd /git/sferes2/exp/HTE/
     git log --decorate --oneline --graph master -n 30 > $CURPATH/git_log.txt
     cd $CURPATH
     if [ ! -d ./results ]; then
@@ -169,14 +181,14 @@ From: airl_lab/default/airl_env:base_2.0
     ARCHIVE_NR=$1
 
     mkdir $CURPATH/results/$PATHNAME
-    #cp exp/hte/python/analysis_hexa_omni.py $CURPATH/results/$PATHNAME
-    #build/exp/hte/hte -d $CURPATH/results/$PATHNAME "$@"
+    #cp exp/HTE/python/analysis_hexa_omni.py $CURPATH/results/$PATHNAME
+    #build/exp/HTE/hte -d $CURPATH/results/$PATHNAME "$@"
 
     for i in 0 1 2 3 4 5 6
     do
         echo $i
         mkdir $CURPATH/results/$PATHNAME/$i
-        build/exp/hte/hte -d $CURPATH/results/$PATHNAME/$i -l $i -r $ARCHIVE_NR 2>/dev/null
+        build/exp/HTE/hte -d $CURPATH/results/$PATHNAME/$i -l $i -r $ARCHIVE_NR 2>/dev/null
     done
 
 
@@ -188,7 +200,7 @@ From: airl_lab/default/airl_env:base_2.0
     export DISPLAY=':'$D
     
     CURPATH=$(pwd)
-    cd /git/sferes2/exp/hte/
+    cd /git/sferes2/exp/HTE/
     git log --decorate --oneline --graph master -n 30 > $CURPATH/git_log.txt
     cd $CURPATH
     if [ ! -d ./results ]; then
@@ -200,14 +212,14 @@ From: airl_lab/default/airl_env:base_2.0
     
     ARCHIVE_NR=$1
     mkdir $CURPATH/results/$PATHNAME
-    #cp exp/hte/python/analysis_hexa_omni.py $CURPATH/results/$PATHNAME
-    #build/exp/hte/aprol_graphic -d $CURPATH/results/$PATHNAME
+    #cp exp/HTE/python/analysis_hexa_omni.py $CURPATH/results/$PATHNAME
+    #build/exp/HTE/aprol_graphic -d $CURPATH/results/$PATHNAME
 
     for i in 0 1 2 3 4 5 6
     do
         echo $i
         mkdir $CURPATH/results/$PATHNAME/$i
-        build/exp/hte/aprol_graphic -d $CURPATH/results/$PATHNAME/$i -r $ARCHIVE_NR -l $i 2>/dev/null
+        build/exp/HTE/aprol_graphic -d $CURPATH/results/$PATHNAME/$i -r $ARCHIVE_NR -l $i 2>/dev/null
     done
     
 %apprun acceleration_gp_legs
@@ -218,7 +230,7 @@ From: airl_lab/default/airl_env:base_2.0
     export DISPLAY=':'$D
     
     CURPATH=$(pwd)
-    cd /git/sferes2/exp/hte/
+    cd /git/sferes2/exp/HTE/
     git log --decorate --oneline --graph master -n 30 > $CURPATH/git_log.txt
     cd $CURPATH
     if [ ! -d ./results ]; then
@@ -228,8 +240,8 @@ From: airl_lab/default/airl_env:base_2.0
     # running the experiment (the -d option allows to define the directory where the results should be stored
     PATHNAME=$(date +%Y-%m-%d_%H_%M_%S)_$$
     mkdir $CURPATH/results/$PATHNAME
-    #cp exp/hte/python/analysis_hexa_omni.py $CURPATH/results/$PATHNAME
-    build/exp/hte/acceleration_gp_legs -d $CURPATH/results/$PATHNAME
+    #cp exp/HTE/python/analysis_hexa_omni.py $CURPATH/results/$PATHNAME
+    build/exp/HTE/acceleration_gp_legs -d $CURPATH/results/$PATHNAME
 
     module load anaconda3/personal
     cd $CURPATH/results/$PATHNAME
@@ -237,21 +249,21 @@ From: airl_lab/default/airl_env:base_2.0
     
 %apprun gen_job_scripts
     echo "Generating job scripts"
-    python3 /git/sferes2/exp/hte/submodules/gitlab_notebook/gen_job_script.py "$@"
+    python3 /git/sferes2/exp/HTE/submodules/gitlab_notebook/gen_job_script.py "$@"
 
 
 %apprun analysis
-    python3 /git/sferes2/exp/hte/python/analysis.py "$@"
+    python3 /git/sferes2/exp/HTE/python/analysis.py "$@"
     CURPATH=$(pwd)
-    cd /git/sferes2/exp/hte/
+    cd /git/sferes2/exp/HTE/
     git log --decorate --oneline --graph master -n 30 > $CURPATH/git_log.txt
 
     python3  ./submodules/gitlab_notebook/gen_report.py $CURPATH
 
 %apprun analysis_damage
-    python3 /git/sferes2/exp/hte/python/analysis_damage.py "$@"
+    python3 /git/sferes2/exp/HTE/python/analysis_damage.py "$@"
     CURPATH=$(pwd)
-    cd /git/sferes2/exp/hte/
+    cd /git/sferes2/exp/HTE/
     git log --decorate --oneline --graph master -n 30 > $CURPATH/git_log.txt
 
     python3  ./submodules/gitlab_notebook/gen_report.py $CURPATH
