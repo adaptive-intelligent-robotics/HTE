@@ -1,7 +1,7 @@
 # Hierarchical Trial and Error Algorithm
 
 This repository contains the code for the [Hierarchical Trial and Error algorithm ](https://doi.org/10.1145/3512290.3528751) presented at GECCO 2022. The implementation builds on top of the RTE algorithm from the paper Chatzilygeroudis, K., Vassiliades, V., & Mouret, J.-B. (2018). Reset-free Trial-and-Error Learning for Robot Damage Recovery. Robotics and Autonomous Systems. All the code uses the [Sferesv2](https://github.com/sferes2/sferes2) framework to run the hierarchical repertoires, so if you would like to familiarise yourself with the framework it will help to have a look at their examples first.
-The link to the original repository can be found [here](https://github.com/resibots/chatzilygeroudis_2018_rte). This repository implements the Hierachical Trial and Error algorithm (HTE) on top of the RTE code and uses the robot_dart wrapper instead of the hexapod_dart wrapper. This phase of the RTE algorithm consists of the adaptation and path planning phase which uses: 
+The link to the original repository can be found [here](https://github.com/resibots/chatzilygeroudis_2018_rte). This repository implements the Hierarchical Trial and Error algorithm (HTE) on top of the RTE code and uses the robot_dart wrapper instead of the hexapod_dart wrapper. This phase of the RTE algorithm consists of the adaptation and path planning phase which uses: 
 
 1. limbo  
 limbo is the library used for the Gaussian Processes to update the model (BD update)
